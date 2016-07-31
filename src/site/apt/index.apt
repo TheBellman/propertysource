@@ -1,0 +1,13 @@
+  ------
+  Introduction
+  ------
+  Robert Hook
+  ------
+  2016-03-16
+
+PropertySource
+
+   PropertySource is a way of sourcing a property (i.e. the value for a simple string key) by transparently looking
+   in the classpath, defined file system locations, the Java environment and the runtime environment until it can
+   resolve the lookup. There is a hierarchy of sources, so that for example a runtime environment definition of a property
+   will override a default resolved from the classpath.
