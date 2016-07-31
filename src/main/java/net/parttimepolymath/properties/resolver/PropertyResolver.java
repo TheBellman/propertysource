@@ -4,17 +4,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.jcip.annotations.ThreadSafe;
 import net.parttimepolymath.properties.PropertySource;
 
 /**
  * container class for implementing the hierarchy of locations.
- * TODO: need a test around this....
  * 
  * @author robert
  */
+@ThreadSafe
 public final class PropertyResolver implements PropertySource {
-
+    /**
+     * logging instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyResolver.class);
+    /**
+     * the set of resolvers that this class delegates to.
+     */
     private final List<Resolver> resolverChain = new ArrayList<>();
+    /**
+     * the cache of discovered values.
+     */
     private final CacheResolver cacheResolver;
 
     /**
@@ -39,12 +52,12 @@ public final class PropertyResolver implements PropertySource {
         } else {
             cacheResolver = new CacheResolver() {
                 @Override
-                public String get(String key) {
+                public String get(final String key) {
                     return null;
                 }
 
                 @Override
-                public void touchCache(String key, String value) {
+                public void touchCache(final String key, final String value) {
                     // silently do nothing
                 }
 
@@ -56,6 +69,7 @@ public final class PropertyResolver implements PropertySource {
 
     @Override
     public String get(final String key) {
+        LOGGER.debug("attempting get({})", key);
         for (Resolver resolver : resolverChain) {
             String value = resolver.get(key);
             if (value != null) {
@@ -92,12 +106,12 @@ public final class PropertyResolver implements PropertySource {
     }
 
     @Override
-    public int getNumber(String key) {
+    public int getNumber(final String key) {
         return getNumber(key, 0);
     }
 
     @Override
-    public boolean getFlag(String key) {
+    public boolean getFlag(final String key) {
         return getFlag(key, false);
     }
 

@@ -1,5 +1,10 @@
 package net.parttimepolymath.properties.resolver;
 
+/**
+ * resolver that looks in it's own LRU cache for a match.
+ * 
+ * @author robert
+ */
 public interface CacheResolver extends Resolver {
     /**
      * touch an item in the cache to keep it fresh. Note that this may add to the cache if it was not previously present.

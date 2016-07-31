@@ -6,14 +6,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.jcip.annotations.ThreadSafe;
+
 /**
- * resolver that looks through the current classpath for certain *.properties files.
- * TODO: the builder must be able to accept a list of property file names expected to be found in the class path.
+ * resolver that looks through the current classpath for certain properties files.
  * 
  * @author robert
  */
+@ThreadSafe
 public final class ResourceResolver implements Resolver {
+    /**
+     * logging instance.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyResolver.class);
 
+    /**
+     * a static set of properties that have been discovered.
+     */
     private final Properties properties = new Properties();
 
     /**
@@ -22,7 +34,7 @@ public final class ResourceResolver implements Resolver {
      * @param clazz A class to use as the base location, assumed to be non-null.
      * @param paths a non-null list of paths, specifying resources relative to the class per the semantics of Class.getResourceAsStream()
      */
-    public ResourceResolver(@SuppressWarnings("rawtypes") Class clazz, List<String> paths) {
+    public ResourceResolver(@SuppressWarnings("rawtypes") final Class clazz, final List<String> paths) {
         for (String path : paths) {
             InputStream stream = clazz.getResourceAsStream(path);
             if (stream != null) {
@@ -30,7 +42,7 @@ public final class ResourceResolver implements Resolver {
                 try {
                     props.load(stream);
                 } catch (IOException e) {
-                    // silently do nothing
+                    LOGGER.warn("Error loading from [{}]", path);
                 }
                 properties.putAll(props);
             }
@@ -43,12 +55,13 @@ public final class ResourceResolver implements Resolver {
      * @param paths a set of paths, specifying resources relative to the class per the semantics of Class.getResourceAsStream()
      * @param clazz A class to use as the base location, assumed to be non-null.
      */
-    public ResourceResolver(@SuppressWarnings("rawtypes") Class clazz, String... paths) {
+    public ResourceResolver(@SuppressWarnings("rawtypes") final Class clazz, final String... paths) {
         this(clazz, Arrays.asList(paths));
     }
 
     @Override
-    public String get(String key) {
+    public String get(final String key) {
+        LOGGER.debug("attempting get({})", key);
         return properties.getProperty(key);
     }
 

@@ -45,6 +45,14 @@ public class FileResolverTest {
     }
 
     @Test
+    public void testBadPaths() {
+        FileResolver resolver = new FileResolver(propertyPathOne.toString(), "/this/will/not/exist");
+        assertEquals("one", resolver.get("frt.key.one"));
+        assertEquals("two", resolver.get("frt.key.two"));
+        assertEquals("three", resolver.get("frt.key.three"));
+    }
+
+    @Test
     public void testPathConstructor() {
         instance = new FileResolver(propertyPathOne, propertyPathTwo);
         assertNull(instance.get("no.such"));

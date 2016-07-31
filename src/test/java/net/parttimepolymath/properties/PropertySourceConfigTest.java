@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -36,5 +37,33 @@ public class PropertySourceConfigTest {
         assertFalse(configOne.getFiles().isEmpty());
         assertTrue(configTwo.getFiles().isEmpty());
         assertFalse(configThree.getFiles().isEmpty());
+    }
+
+    @Test
+    public void testNullFileList() {
+        PropertySourceConfig config = PropertySourceConfig.builder().withFiles((List<String>) null).build();
+        assertTrue(config.getFiles().isEmpty());
+    }
+
+    @Test
+    public void testResourceList() {
+        PropertySourceConfig configOne = PropertySourceConfig.builder().withResourceBase(this.getClass())
+                .withResources(Arrays.asList("fred", "mary")).build();
+        PropertySourceConfig configTwo = PropertySourceConfig.builder().withResourceBase(this.getClass()).withResources().build();
+        PropertySourceConfig configThree = PropertySourceConfig.builder().withResourceBase(this.getClass()).withResources("fred", "mary")
+                .build();
+        PropertySourceConfig configFour = PropertySourceConfig.builder().withResourceBase(this.getClass())
+                .withResources((List<String>) null).build();
+
+        assertNotNull(configOne.getClass());
+        assertNotNull(configTwo.getClass());
+        assertNotNull(configThree.getClass());
+        assertNotNull(configFour.getClass());
+
+        assertFalse(configOne.getResources().isEmpty());
+        assertTrue(configTwo.getResources().isEmpty());
+        assertFalse(configThree.getResources().isEmpty());
+        assertTrue(configFour.getResources().isEmpty());
+
     }
 }

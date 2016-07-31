@@ -3,6 +3,7 @@ package net.parttimepolymath.properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.ThreadSafe;
 import net.parttimepolymath.properties.resolver.EnvironmentResolver;
 import net.parttimepolymath.properties.resolver.FileResolver;
 import net.parttimepolymath.properties.resolver.PropertyResolver;
@@ -15,6 +16,7 @@ import net.parttimepolymath.properties.resolver.SystemResolver;
  * 
  * @author robert
  */
+@ThreadSafe
 public final class PropertySourceFactory {
 
     /**
@@ -29,9 +31,10 @@ public final class PropertySourceFactory {
     /**
      * build a PropertySource. The priority order is: System, Environment, Files, Resources.
      * 
+     * @param config the non-null configuration to derive the source from.
      * @return a non-null PropertySource.
      */
-    public static PropertySource build(PropertySourceConfig config) {
+    public static PropertySource build(final PropertySourceConfig config) {
 
         List<Resolver> resolvers = new ArrayList<>();
         resolvers.add(new SystemResolver());

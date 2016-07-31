@@ -1,6 +1,7 @@
 package net.parttimepolymath.properties.resolver;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.BeforeClass;
@@ -11,7 +12,13 @@ public class CacheResolverTest {
 
     @BeforeClass
     public static void setup() {
-        resolver = new CacheResolverImpl(16);
+        resolver = new CacheResolverImpl(64);
+    }
+
+    @Test
+    public void testSillySize() {
+        Resolver instance = new CacheResolverImpl(-12);
+        assertNotNull(instance);
     }
 
     @Test
@@ -29,5 +36,9 @@ public class CacheResolverTest {
 
         value = resolver.get("property.to.add");
         assertEquals("fish", value);
+
+        resolver.touchCache("property.to.add", "cheese");
+        assertEquals("fish", value);
+
     }
 }

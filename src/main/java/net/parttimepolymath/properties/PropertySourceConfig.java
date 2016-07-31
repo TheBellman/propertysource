@@ -5,20 +5,36 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.jcip.annotations.ThreadSafe;
+
 /**
  * simple class using a builder pattern to construct a configuration to pass to the property source factory.
  * 
  * @author robert
  */
+@ThreadSafe
 public final class PropertySourceConfig {
     /**
      * default size of the cache.
      */
     public static final int CACHE_SIZE = 64;
 
+    /**
+     * will local caching be used?
+     */
     private boolean useCache;
+    /**
+     * the list of files used for the file resolver.
+     */
     private List<String> files;
+    /**
+     * the base class used to define the root of the resource search.
+     */
+    @SuppressWarnings("rawtypes")
     private Class resourceClass;
+    /**
+     * the list of resource paths to look for.
+     */
     private List<String> resources;
 
     /**
@@ -54,15 +70,9 @@ public final class PropertySourceConfig {
     /**
      * @return the resourceClass
      */
+    @SuppressWarnings("rawtypes")
     public Class getResourceClass() {
         return resourceClass;
-    }
-
-    /**
-     * @param resourceClass the resourceClass to set
-     */
-    public void setResourceClass(Class resourceClass) {
-        this.resourceClass = resourceClass;
     }
 
     /**
@@ -70,13 +80,6 @@ public final class PropertySourceConfig {
      */
     public List<String> getResources() {
         return resources;
-    }
-
-    /**
-     * @param resources the resources to set
-     */
-    public void setResources(List<String> resources) {
-        this.resources = resources;
     }
 
     /**
@@ -96,6 +99,9 @@ public final class PropertySourceConfig {
      */
     public static final class Builder {
 
+        /**
+         * the instance of the configuration that is being assembled.
+         */
         private final PropertySourceConfig instance = new PropertySourceConfig();
 
         /**
@@ -104,6 +110,7 @@ public final class PropertySourceConfig {
         public Builder() {
             instance.useCache = false;
             instance.files = Collections.emptyList();
+            instance.resources = Collections.emptyList();
         }
 
         /**
@@ -136,8 +143,7 @@ public final class PropertySourceConfig {
          * @return the Builder instance.
          */
         public Builder withFiles(final String... files) {
-            instance.files = new ArrayList<>(Arrays.asList(files));
-            return this;
+            return withFiles(Arrays.asList(files));
         }
 
         /**
@@ -146,7 +152,7 @@ public final class PropertySourceConfig {
          * @param clazz a non-null Class.
          * @return the Builder instance.
          */
-        public Builder withResourceBase(final Class clazz) {
+        public Builder withResourceBase(@SuppressWarnings("rawtypes") final Class clazz) {
             instance.resourceClass = clazz;
             return this;
         }
@@ -175,8 +181,7 @@ public final class PropertySourceConfig {
          * @return the Builder instance.
          */
         public Builder withResources(final String... resources) {
-            instance.resources = new ArrayList<>(Arrays.asList(resources));
-            return this;
+            return withResources(Arrays.asList(resources));
         }
 
         /**

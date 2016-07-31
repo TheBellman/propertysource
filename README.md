@@ -1,5 +1,5 @@
-# SimpleLRU
-A simple least-recently-used cache, where the cache is capped at a certain size, and oldest entries are ejected when the cache becomes full.
+# PropertySource
+A way of abstracting away searching for "system properties". This package allows you to specify key/value properties as any mix of classpath resources, external property files, system variables and environmental variables. I anticipate extending this in the future to provide support for external key/value stores as well.
 
 This project builds a JAR which can then be used within your projects.
 
@@ -10,15 +10,15 @@ The following notes all assume that you have access to the command line and know
 To build the  JAR after checking out the project:
 
 ```
-git clone https://github.com/TheBellman/simplelru.git
-cd simplelru
+git clone https://github.com/TheBellman/propertysource.git
+cd propertysource
 mvn clean package
 ```
 
 After a bit of grinding, the JAR should be available at
 
 ```
-target/SimpleLRU-1.0-SNAPSHOT.jar 
+target/PropertySource-1.0-SNAPSHOT.jar 
 ```
 
 A site report can be built locally as well, which will provide you with JavaDoc and test coverage details:
@@ -40,38 +40,33 @@ http://54.209.160.169:8081/artifactory/webapp/#/home
 
 ## Use
 
-There are two cache implementations, *SimpleLRUCache* and *TimedLRUCache*, which at some point in the future I may refactor to share a common interface. Both of these are intended to be highly performant and thread safe, however it is up to you to manage the number of cache instances in your application.
-
-*SimpleLRUCache* is the simplest to think about initially. Let's take the simple case of a cache keyed by *String* with *Integer* values, capped to have at most 100 items:
+While it is possible to use the internal resolver classes, this is a very suboptimal way of using the package! Instead the ideal is to use `PropertySourceFactory.build()` to obtain a `PropertySource`:
 
 ```
-SimpleLRUCache<String, Integer> cache = new SimpleLRUCache<>(100);
+PropertySourceConfig config = PropertySourceConfig.builder()
+    .withCaching()
+    .withFiles("/etc/main.properties", "/etc/other.properties")
+    .withResourceBase(MyClass.class)
+    .withResources("default.properties");
+
+PropertySource source = PropertySourceFactory.build(config);
+
+String someValue = source.get("my.property.key");
+boolean someFlag = source.getFlag("my.flag.key");
+int someNumber = source.getNumber("minimum.size", 42);
 ```
-you can then add to the cache by calling *put* (Note we are autoboxing the integer), and retrieve with *get*:
 
-```
-cache.put("MyKey", 123456);
-Integer myNum = cache.get("MyKey");
-```
-Which is about all there is to it. Note that if the requested value is not in the cache, a *null* is returned. 
+Constructing a PropertySource in this way does define a specific hierarchy of locations. In priority order:
 
-Refer to the JavaDoc to see the other methods on this class, which are provided should you need to manage the contents of the cache manually.
+1. local cache, if in use
+2. JVM System Properties (c.f. defined with `-D<name>=<value>`)
+2. environmental properties
+3. available files
+4. available resources
 
-*TimedLRUCache* appears to have very similar semantics, with the addition of an additional constructor parameter:
+In it's current incarnation, caching is of little benefit, as the resolvers are all working from local resources that are effectively static, however since the local cache is checked first then frequently referenced properties will resolve as quickly as possible without going deeper into the resolution chain.
 
-```
-TimedLRUCache<String, Integer> cache = new TimedLRUCache<>(100, 60000);
+There is no reason why your code could not have different sources configured in different ways, each `PropertySource` is thread safe and independent of all others.
 
-cache.put("MyKey", 123456);
-Integer myNum = cache.get("MyKey");
-```
-The key difference is that any item placed in the cache will only survive for a certain time (in this case 1 minute) before evaporating into the aether.
-
-Most of the remaining methods for this class are also provided to help with managing the content of the cache, but *touchAndGet* deserves special mention. It behaves just like *get*:
-
-```
-Integer myNum = cache.touchAndGet("MyKey");
-```
-except if the value is present in the cache, it's count-down clock is reset.
-
-The remaining class in the package, *TimedHolder*, may be of some use to you, however it's primarily there to support *TimedLRUCache*. It is a thread safe container for an object where the container is emptied after a certain time. As with any container if you obtain the content of the *TimedHolder* in one thread, and then set the content to something different in a second thread, the first thread retains whatever content it found, rather than "seeing" the new content unless it re-fetches.
+### Logging
+The package makes use of `slf4j`, and will be sensitive to the presence of `log4j` configuration. (In theory, currently this package should be considered a draft until I build an example test harness).

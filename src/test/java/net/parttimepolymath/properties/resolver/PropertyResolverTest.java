@@ -55,6 +55,12 @@ public class PropertyResolverTest {
     }
 
     @Test
+    public void testAlternateConstructor() {
+        PropertySource instance = new PropertyResolver(0, new EnvironmentResolver(), new SystemResolver());
+        assertNotNull(instance);
+    }
+
+    @Test
     public void testFileResolution() {
         assertEquals("one", source.get("frt.key.one"));
         assertEquals("two", source.get("frt.key.two"));
