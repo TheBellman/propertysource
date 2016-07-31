@@ -18,7 +18,7 @@ mvn clean package
 After a bit of grinding, the JAR should be available at
 
 ```
-target/PropertySource-1.0-SNAPSHOT.jar 
+target/PropertySource-1.1-SNAPSHOT.jar 
 ```
 
 A site report can be built locally as well, which will provide you with JavaDoc and test coverage details:
