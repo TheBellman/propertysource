@@ -46,6 +46,7 @@ While it is possible to use the internal resolver classes, this is a very subopt
 PropertySourceConfig config = PropertySourceConfig.builder()
     .withCaching()
     .withFiles("/etc/main.properties", "/etc/other.properties")
+    .withDirectory("/usr/local/lib/myapp/conf")
     .withResourceBase(MyClass.class)
     .withResources("default.properties");
 
@@ -62,6 +63,7 @@ Constructing a PropertySource in this way does define a specific hierarchy of lo
 2. JVM System Properties (c.f. defined with `-D<name>=<value>`)
 2. environmental properties
 3. available files
+4. `.properties` files found in the specified directory
 4. available resources
 
 In it's current incarnation, caching is of little benefit, as the resolvers are all working from local resources that are effectively static, however since the local cache is checked first then frequently referenced properties will resolve as quickly as possible without going deeper into the resolution chain.

@@ -36,6 +36,10 @@ public final class PropertySourceConfig {
      * the list of resource paths to look for.
      */
     private List<String> resources;
+    /**
+     * the path to use for the directory resolver.
+     */
+    private String directory;
 
     /**
      * private constructor to prevent direct construction.
@@ -80,6 +84,13 @@ public final class PropertySourceConfig {
      */
     public List<String> getResources() {
         return resources;
+    }
+
+    /**
+     * @return the directory
+     */
+    public String getDirectory() {
+        return directory;
     }
 
     /**
@@ -144,6 +155,17 @@ public final class PropertySourceConfig {
          */
         public Builder withFiles(final String... files) {
             return withFiles(Arrays.asList(files));
+        }
+
+        /**
+         * specify a directory containing *.properties files that will be used.
+         * 
+         * @param path the path to the directory, which is assumed to be a good path pointing at a directory.
+         * @return the Builder instance.
+         */
+        public Builder withDirectory(final String path) {
+            instance.directory = path;
+            return this;
         }
 
         /**

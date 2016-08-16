@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
+import net.parttimepolymath.properties.resolver.DirectoryResolver;
 import net.parttimepolymath.properties.resolver.EnvironmentResolver;
 import net.parttimepolymath.properties.resolver.FileResolver;
 import net.parttimepolymath.properties.resolver.PropertyResolver;
@@ -26,10 +27,8 @@ public final class PropertySourceFactory {
 
     }
 
-    // TODO add a directory resolver - if passed a path which is a directory, read all .properties in there
-
     /**
-     * build a PropertySource. The priority order is: System, Environment, Files, Resources.
+     * build a PropertySource. The priority order is: System, Environment, Files, Directory, Resources.
      * 
      * @param config the non-null configuration to derive the source from.
      * @return a non-null PropertySource.
@@ -41,6 +40,9 @@ public final class PropertySourceFactory {
         resolvers.add(new EnvironmentResolver());
         if (!config.getFiles().isEmpty()) {
             resolvers.add(new FileResolver(config.getFiles()));
+        }
+        if (config.getDirectory() != null) {
+            resolvers.add(new DirectoryResolver(config.getDirectory()));
         }
         if (config.getResourceClass() != null) {
             resolvers.add(new ResourceResolver(config.getResourceClass(), config.getResources()));

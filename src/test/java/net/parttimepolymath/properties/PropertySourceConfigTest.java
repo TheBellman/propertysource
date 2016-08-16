@@ -3,6 +3,7 @@ package net.parttimepolymath.properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -26,6 +27,14 @@ public class PropertySourceConfigTest {
 
         assertEquals(0, configOne.getCacheSize());
         assertEquals(PropertySourceConfig.CACHE_SIZE, configTwo.getCacheSize());
+    }
+
+    @Test
+    public void testDirectory() {
+        PropertySourceConfig configOne = PropertySourceConfig.builder().build();
+        PropertySourceConfig configTwo = PropertySourceConfig.builder().withDirectory("/tmp").build();
+        assertNull(configOne.getDirectory());
+        assertEquals("/tmp", configTwo.getDirectory());
     }
 
     @Test
