@@ -42,6 +42,21 @@ public final class PropertySourceConfig {
     private String directory;
 
     /**
+     * the host or IP address for Consul.
+     */
+    private String consulHost;
+
+    /**
+     * the port for Consul.
+     */
+    private int consulPort;
+
+    /*
+     * the consul key prefix.
+     */
+    private String consulPrefix;
+
+    /**
      * private constructor to prevent direct construction.
      */
     private PropertySourceConfig() {
@@ -91,6 +106,27 @@ public final class PropertySourceConfig {
      */
     public String getDirectory() {
         return directory;
+    }
+
+    /**
+     * @return the consulHost
+     */
+    public String getConsulHost() {
+        return consulHost;
+    }
+
+    /**
+     * @return the consulPort
+     */
+    public int getConsulPort() {
+        return consulPort;
+    }
+
+    /**
+     * @return the consulPrefix
+     */
+    public String getConsulPrefix() {
+        return consulPrefix;
     }
 
     /**
@@ -204,6 +240,24 @@ public final class PropertySourceConfig {
          */
         public Builder withResources(final String... resources) {
             return withResources(Arrays.asList(resources));
+        }
+
+        /**
+         * Include Consul in the resolution chain. If using Consul and frequently polling a key, it is recommended
+         * that you use caching, to avoid the overhead of frequent trips across the network.
+         * 
+         * @param host the target host name or IP Address of the Consul service. All parameters are ignored if host is null.
+         * @param port the port to lookup (8500 is the default for Consul)
+         * @param prefix the base prefix for lookups. May be null or empty.
+         * @return the Builder instance.
+         */
+        public Builder usingConsul(final String host, int port, String prefix) {
+            if (host != null) {
+                instance.consulHost = host;
+                instance.consulPort = port;
+                instance.consulPrefix = prefix;
+            }
+            return this;
         }
 
         /**

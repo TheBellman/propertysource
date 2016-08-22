@@ -45,6 +45,7 @@ While it is possible to use the internal resolver classes, this is a very subopt
 ```
 PropertySourceConfig config = PropertySourceConfig.builder()
     .withCaching()
+    .usingConsul("192.168.99.100", 8500, "properties/uat")
     .withFiles("/etc/main.properties", "/etc/other.properties")
     .withDirectory("/usr/local/lib/myapp/conf")
     .withResourceBase(MyClass.class)
@@ -60,6 +61,7 @@ int someNumber = source.getNumber("minimum.size", 42);
 Constructing a PropertySource in this way does define a specific hierarchy of locations. In priority order:
 
 1. local cache, if in use
+2. Consul, if reachable
 2. JVM System Properties (c.f. defined with `-D<name>=<value>`)
 2. environmental properties
 3. available files
@@ -70,5 +72,15 @@ In it's current incarnation, caching is of little benefit, as the resolvers are 
 
 There is no reason why your code could not have different sources configured in different ways, each `PropertySource` is thread safe and independent of all others.
 
+### Consul
+Using [Consul](https://www.consul.io) as a property source is somewhat speculative, and I intend to provide a companion product as a fully fledged example of this library, including using Consul. In it's current form Consul support is quite simple, and makes three assumptions:
+
+1. access is via HTTP, not HTTPS
+2. There is no access constraint in play on retrieving from the Key/Value store
+3. Keys take the form `prefix/key`, where `prefix` can be an arbitrarily deep hierarchy.
+
+Consul's Key/Value store supports multipart keys, which I am interpreting to deal with as a namespace, in order to keep the resolution semantics the same as other sources of properties.
+
+I am intending two enhancements around Consul for this library, first to deal with the constraints above, and secondly to allow the configuration properties for using Consul to be automatically picked up from the other available property sources if they are defined. This would allow a bootstrapping operation, where simple local properties could be used to point to Consul as a central shared property store.
 ### Logging
 The package makes use of `slf4j`, and will be sensitive to the presence of `log4j` configuration. (In theory, currently this package should be considered a draft until I build an example test harness).

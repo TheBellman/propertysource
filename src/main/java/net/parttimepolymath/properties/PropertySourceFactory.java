@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
+import net.parttimepolymath.properties.resolver.ConsulResolver;
 import net.parttimepolymath.properties.resolver.DirectoryResolver;
 import net.parttimepolymath.properties.resolver.EnvironmentResolver;
 import net.parttimepolymath.properties.resolver.FileResolver;
@@ -28,7 +29,7 @@ public final class PropertySourceFactory {
     }
 
     /**
-     * build a PropertySource. The priority order is: System, Environment, Files, Directory, Resources.
+     * build a PropertySource. The priority order is: Consul, System, Environment, Files, Directory, Resources.
      * 
      * @param config the non-null configuration to derive the source from.
      * @return a non-null PropertySource.
@@ -36,14 +37,23 @@ public final class PropertySourceFactory {
     public static PropertySource build(final PropertySourceConfig config) {
 
         List<Resolver> resolvers = new ArrayList<>();
+
+        if (config.getConsulHost() != null) {
+            resolvers.add(new ConsulResolver(config.getConsulHost(), config.getConsulPort(), config.getConsulPrefix()));
+        }
+
         resolvers.add(new SystemResolver());
+
         resolvers.add(new EnvironmentResolver());
+
         if (!config.getFiles().isEmpty()) {
             resolvers.add(new FileResolver(config.getFiles()));
         }
+
         if (config.getDirectory() != null) {
             resolvers.add(new DirectoryResolver(config.getDirectory()));
         }
+
         if (config.getResourceClass() != null) {
             resolvers.add(new ResourceResolver(config.getResourceClass(), config.getResources()));
         }

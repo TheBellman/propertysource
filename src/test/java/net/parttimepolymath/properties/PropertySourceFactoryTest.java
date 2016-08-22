@@ -12,7 +12,8 @@ public class PropertySourceFactoryTest {
 
     @Test
     public void test() {
-        PropertySource result = PropertySourceFactory.build(PropertySourceConfig.builder().withCaching().withDirectory("/tmp").build());
+        PropertySource result = PropertySourceFactory.build(PropertySourceConfig.builder().withCaching()
+                .usingConsul("192.168.99.100", 8500, "fred/mary/jane").withDirectory("/tmp").build());
         assertNotNull(result);
         assertThat(result, instanceOf(PropertyResolver.class));
     }

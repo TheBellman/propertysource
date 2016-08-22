@@ -55,6 +55,22 @@ public class PropertySourceConfigTest {
     }
 
     @Test
+    public void testConsul() {
+        PropertySourceConfig config = PropertySourceConfig.builder().usingConsul("192.168.99.100", 8500, "fred/mary/jane").build();
+        assertEquals("192.168.99.100", config.getConsulHost());
+        assertEquals(8500, config.getConsulPort());
+        assertEquals("fred/mary/jane", config.getConsulPrefix());
+    }
+
+    @Test
+    public void testConsulNull() {
+        PropertySourceConfig config = PropertySourceConfig.builder().usingConsul(null, 8500, "fred/mary/jane").build();
+        assertNull(config.getConsulHost());
+        assertEquals(0, config.getConsulPort());
+        assertNull(config.getConsulPrefix());
+    }
+
+    @Test
     public void testResourceList() {
         PropertySourceConfig configOne = PropertySourceConfig.builder().withResourceBase(this.getClass())
                 .withResources(Arrays.asList("fred", "mary")).build();
