@@ -5,7 +5,7 @@ This project builds a JAR which can then be used within your projects.
 
 ## Building
 
-The following notes all assume that you have access to the command line and know what to do there, have a fairly recent version of Maven, and at least Java 7. The code will build with Java 8, but is pegged to Java 7 compliance. 
+The following notes all assume that you have access to the command line and know what to do there, have a fairly recent version of Maven, and at least Java 7. The code will build with Java 8, but is pegged to Java 7 compliance.
 
 To build the  JAR after checking out the project:
 
@@ -18,7 +18,7 @@ mvn clean package
 After a bit of grinding, the JAR should be available at
 
 ```
-target/PropertySource-1.1-SNAPSHOT.jar 
+target/PropertySource-1.1-SNAPSHOT.jar
 ```
 
 A site report can be built locally as well, which will provide you with JavaDoc and test coverage details:
@@ -35,7 +35,7 @@ target/site/index.html
 **Note:** A current release version can be found in my private Artifactory at the URL below. There are instructions there for how to include this repository in your build cycle.
 
 ```
-http://54.209.160.169:8081/artifactory/webapp/#/home
+http://ec2-52-56-175-37.eu-west-2.compute.amazonaws.com:8080/#welcome
 ```
 
 ## Use
@@ -82,5 +82,6 @@ Using [Consul](https://www.consul.io) as a property source is somewhat speculati
 Consul's Key/Value store supports multipart keys, which I am interpreting to deal with as a namespace, in order to keep the resolution semantics the same as other sources of properties.
 
 I am intending two enhancements around Consul for this library, first to deal with the constraints above, and secondly to allow the configuration properties for using Consul to be automatically picked up from the other available property sources if they are defined. This would allow a bootstrapping operation, where simple local properties could be used to point to Consul as a central shared property store.
+
 ### Logging
 The package makes use of `slf4j`, and will be sensitive to the presence of `log4j` configuration. (In theory, currently this package should be considered a draft until I build an example test harness).
