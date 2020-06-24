@@ -7,6 +7,8 @@ This project builds a JAR which can then be used within your projects.
 
 The following notes all assume that you have access to the command line and know what to do there, have a fairly recent version of Maven, and at least Java 7. The code will build with Java 8, but is pegged to Java 7 compliance.
 
+**Note**: this project has a dependency on [SimpleLRU](https://github.com/TheBellman/simplelru), so you will probably need to download that project and run `mvn install` to make the dependency available.
+
 To build the  JAR after checking out the project:
 
 ```
@@ -31,11 +33,6 @@ This will result in a local web site that can be accessed via
 
 ```
 target/site/index.html
-```
-**Note:** A current release version can be found in my private Artifactory at the URL below. There are instructions there for how to include this repository in your build cycle.
-
-```
-http://ec2-52-56-175-37.eu-west-2.compute.amazonaws.com:8080/#welcome
 ```
 
 ## Use

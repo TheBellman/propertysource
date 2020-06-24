@@ -7,7 +7,7 @@
     <groupId>net.parttimepolymath</groupId>
     <artifactId>PropertySource</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.2</version>
     <name>PropertySource</name>
     <description>Provides properties that may be in the classpath, external file, environment or system.</description>
     <url>https://github.com/TheBellman/propertysource</url>
@@ -42,7 +42,7 @@
         <maven.build.timestamp.format>yyyyMMdd.HHmmss</maven.build.timestamp.format>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <site.encoding>UTF-8</site.encoding>
-        <compileSource>1.7</compileSource>
+        <compileSource>1.8</compileSource>
     </properties>
 
     <dependencies>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>net.parttimepolymath.cache</groupId>
             <artifactId>SimpleLRU</artifactId>
-            <version>1.1</version>
+            <version>1.3.2</version>
         </dependency>
 
         <!-- used for querying Consul -->
